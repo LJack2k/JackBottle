@@ -1,0 +1,10 @@
+name: ${pluginname}
+main: ${mainclass}
+version: ${project.version}
+api-version: ${apiversion}
+author: ${developer}
+description: ${description}
+commands:
+  jackcheques:
+    description: Main command. See /jackbottles help for more information
+    usage: /jackbottles
