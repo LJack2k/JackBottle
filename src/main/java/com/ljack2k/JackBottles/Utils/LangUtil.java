@@ -95,7 +95,20 @@ public class LangUtil {
     	HELP_VERSION_COMMAND("HelpVersionCommand", true),
     	CURRENT_VERSION("CurrentVersion", true),
     	CHATHEADER_VERSION_INFORMATION("ChatHeaderVersionInformation", true),
-        SOMETHING_WRONG("SomethingWrong", true);
+        SOMETHING_WRONG("SomethingWrong", true),
+        XP_BOTTLE_NAME("ExperienceBottleItemName", true),
+        XP_BOTTLE_SHIFT_RIGHT_CLICK_USE("ExperienceBottleUseShiftRightClickText", true),
+        XP_BOTTLE_SHIFT_LEFT_CLICK_USE("ExperienceBottleUseShiftLeftClickText", true),
+        XP_BOTTLE_USE_TROW("ExperienceBottleUseTrowText", true),
+        XP_BOTTLE_RIGHT_CLICK_USE("ExperienceBottleUse", true),
+    	STORED_XP("StoredXP", true),
+        NOT_ENOUGH_XP_TO_STORE("NotEnoughXP", true),
+        EXPERIENCE_AMOUNT_ERROR("ExperienceAmountError", true),
+        HELP_WITHDRAWXP_HEADER("HelpWithdrawXPHeader", true),
+        HELP_WITHDRAWXP("HelpWithDrawXP", true),
+        YOUR_INVENTORY_FULL("YourInventoryFull", true),
+
+        PLACEHOLDER("Nothing", false);
 
         @Getter private final String keyName;
         @Getter private final boolean translateColors;

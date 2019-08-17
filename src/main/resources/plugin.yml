@@ -5,6 +5,9 @@ api-version: ${apiversion}
 author: ${developer}
 description: ${description}
 commands:
-  jackcheques:
+  jackbottles:
     description: Main command. See /jackbottles help for more information
     usage: /jackbottles
+  withdrawxp:
+    description: Withdraw XP from the player and store it in a bottle
+    usage: /withdrawxp <amount>

@@ -2,6 +2,9 @@ package com.ljack2k.JackBottles;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ljack2k.JackBottles.Commands.CommandWithdrawXP;
+import com.ljack2k.JackBottles.Listeners.EventExpBottle;
+import com.ljack2k.JackBottles.Listeners.EventPlayerCreateXPBottle;
 import com.ljack2k.JackBottles.Listeners.EventPlayerInteract;
 import com.ljack2k.JackBottles.Utils.ConfigUtil;
 import com.ljack2k.JackBottles.Utils.LangUtil;
@@ -53,6 +56,10 @@ public class JackBottles extends JavaPlugin {
     @Getter
     static Material baseItem = Material.GLASS_BOTTLE;
 
+    @Getter
+    static Material storedItem = Material.EXPERIENCE_BOTTLE;
+
+
     public static JackBottles getPlugin() {
         return getPlugin(JackBottles.class);
     }
@@ -71,23 +78,20 @@ public class JackBottles extends JavaPlugin {
         version = getDescription().getVersion();
         pluginName = getDescription().getName();
 
-        Thread initThread = new Thread(this::init, pluginName + "-Thread");
-        initThread.setUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace();
-            getLogger().severe(pluginName + " failed to load properly: " + e.getMessage() + ".");
-        });
-        initThread.start();
+        initConfigAndLang();
+        registerEvents();
+        // Register commands
+        getCommand("withdrawxp").setExecutor(new CommandWithdrawXP(this));
+
         getLogger().info("I'm done loading.");
     }
 
-    public void init() {
-        initConfigAndLang();
-        registerEvents();
-    }
 
     public void registerEvents() {
         PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(new EventPlayerInteract(this), this);
+        pm.registerEvents(new EventExpBottle(this), this);
+        //pm.registerEvents(new EventPlayerCreateXPBottle(this), this);
         JackBottles.debug("Events Registered");
     }
 

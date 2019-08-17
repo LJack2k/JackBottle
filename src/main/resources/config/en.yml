@@ -7,3 +7,5 @@ ConfigVersion: "${project.version}"
 #
 DebugLevel: 0
 ForcedLanguage: EN
+
+ExperienceAmountPerClick: 10

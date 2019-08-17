@@ -4,7 +4,7 @@
   <groupId>com.ljack2k</groupId>
   <artifactId>JackBottles</artifactId>
   <name>JackBottles</name>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
   <description>A Cheques System</description>
   <issueManagement>
     <system>Github</system>
