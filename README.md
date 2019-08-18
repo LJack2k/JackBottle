@@ -21,8 +21,8 @@ A Minecraft 1.14 Spigot plugin that stores XP in bottles.
 | Permissions | User group |
 |---|---|
 | jackbottles.admin | admin |
-| jackbottles.withdraw | user |
-| jackbottles.withdraw | user | 
+| jackbottles.withdrawxp | user |
+| jackbottles.withdrawxp | user | 
 
 ## Config
 ```yaml
