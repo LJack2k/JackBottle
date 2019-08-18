@@ -20,7 +20,7 @@ HelpSaveCommand: "Save the plugin data to the config."
 HelpDebugCommand: "Enable or disable debug mode. Set to 0 (OFF), 1 (BASIC) or 2 (FULL)."
 HelpVersionCommand: "Shows version information"
 
-HelpWithdrawXPHeader: "Widthdraw XP Help"
+HelpWithdrawXPHeader: "Withdraw XP Help"
 HelpWithdrawXP: "Withdraw XP from your character and transfer it into a bottle"
 
 # Messages to the player
@@ -28,11 +28,11 @@ SomethingWrong: "Sorry! Something went wrong"
 NotEnoughXP: "You don't have enough experience to store in the bottle"
 ExperienceAmountError: "Specify a correct XP amount"
 YourInventoryFull: "Sorry, your inventory is full!"
+YourCurrentXPAmount: "You currently have %s XP"
+BaseItemNeeded: "You need to have an empty glass bottle to store the XP"
 
 # Tooltip settings
 ExperienceBottleItemName: "Jack Bottle of Experience"
 StoredXP: "Stored XP"
-ExperienceBottleUseStoringClickText: "Shift + Left click to store %s XP"
-ExperienceBottleUseRetrievingClickText: "Ctrl + Left click to retrieve %s XP"
 ExperienceBottleUseTrowText: "Throw bottle to free all the XP from the bottle"
 ExperienceBottleUse: "Right click to retrieve XP"

@@ -3,11 +3,13 @@ package com.ljack2k.JackBottles;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ljack2k.JackBottles.Commands.CommandWithdrawXP;
+import com.ljack2k.JackBottles.Listeners.EventBlockDispense;
 import com.ljack2k.JackBottles.Listeners.EventExpBottle;
-import com.ljack2k.JackBottles.Listeners.EventPlayerCreateXPBottle;
 import com.ljack2k.JackBottles.Listeners.EventPlayerInteract;
+import com.ljack2k.JackBottles.Listeners.EventProjectileLaunch;
 import com.ljack2k.JackBottles.Utils.ConfigUtil;
 import com.ljack2k.JackBottles.Utils.LangUtil;
+import com.ljack2k.JackBottles.Utils.SetExpFix;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -43,7 +45,7 @@ public class JackBottles extends JavaPlugin {
     public static boolean isReady = false;
 
     @Getter
-    public static String chatPrefix = ChatColor.GRAY + "[" + ChatColor.GOLD + "JC" + ChatColor.GRAY + "] " + ChatColor.RESET;
+    public static String chatPrefix = ChatColor.GRAY + "[" + ChatColor.GOLD + "JB" + ChatColor.GRAY + "] " + ChatColor.RESET;
     @Getter
     static String baseCommand = "jackbottles";           // Must match with the plugin.yml command
     @Getter
@@ -58,7 +60,6 @@ public class JackBottles extends JavaPlugin {
 
     @Getter
     static Material storedItem = Material.EXPERIENCE_BOTTLE;
-
 
     public static JackBottles getPlugin() {
         return getPlugin(JackBottles.class);
@@ -91,7 +92,8 @@ public class JackBottles extends JavaPlugin {
         PluginManager pm = Bukkit.getServer().getPluginManager();
         pm.registerEvents(new EventPlayerInteract(this), this);
         pm.registerEvents(new EventExpBottle(this), this);
-        //pm.registerEvents(new EventPlayerCreateXPBottle(this), this);
+        pm.registerEvents(new EventProjectileLaunch(this), this);
+        pm.registerEvents(new EventBlockDispense(this), this);
         JackBottles.debug("Events Registered");
     }
 
@@ -132,6 +134,7 @@ public class JackBottles extends JavaPlugin {
                         return false;
                     }
                     reloadConfig();
+                    LangUtil.reloadMessages();
                     sendChatMessage(sender, ChatColor.YELLOW + "" + LangUtil.InternalMessage.CONFIG_RELOAD);
                     return true;
                 } else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
@@ -235,6 +238,12 @@ public class JackBottles extends JavaPlugin {
         sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.YELLOW + "/" + baseCommand + " " + ChatColor.GREEN + "help"
                 + ChatColor.RESET + ChatColor.WHITE + " " + LangUtil.Message.HELP_COMMAND);
 
+        if (sender.hasPermission(basePermissionNode + ".withdrawxp")) {
+            sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.YELLOW + "/withdrawxp" + ChatColor.GREEN + "?"
+                    + ChatColor.RESET + ChatColor.WHITE + " " + LangUtil.Message.HELP_WITHDRAWXP);
+        }
+
+
         if (sender.hasPermission(basePermissionNode + ".admin")) {
             sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.YELLOW + "/" + baseCommand + " " + ChatColor.GREEN + "reload"
                     + ChatColor.RESET + ChatColor.WHITE + " " + LangUtil.Message.HELP_RELOAD_COMMAND);
@@ -281,7 +290,7 @@ public class JackBottles extends JavaPlugin {
         // return if plugin is not in debug mode
         if (getPlugin().getConfig().getInt("DebugLevel") == 0) return;
 
-        getPlugin().getLogger().info("[DEBUG] " + message + (getPlugin().getConfig().getInt("DebugLevel") >= 2 ? "\n" + getStackTrace() : ""));
+        getPlugin().getLogger().info(ChatColor.YELLOW +"[DEBUG] " + message + (getPlugin().getConfig().getInt("DebugLevel") >= 2 ? "\n" + getStackTrace() : ""));
     }
 
     public static String getStackTrace() {

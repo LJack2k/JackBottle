@@ -97,9 +97,6 @@ public class LangUtil {
     	CHATHEADER_VERSION_INFORMATION("ChatHeaderVersionInformation", true),
         SOMETHING_WRONG("SomethingWrong", true),
         XP_BOTTLE_NAME("ExperienceBottleItemName", true),
-        XP_BOTTLE_SHIFT_RIGHT_CLICK_USE("ExperienceBottleUseShiftRightClickText", true),
-        XP_BOTTLE_SHIFT_LEFT_CLICK_USE("ExperienceBottleUseShiftLeftClickText", true),
-        XP_BOTTLE_USE_TROW("ExperienceBottleUseTrowText", true),
         XP_BOTTLE_RIGHT_CLICK_USE("ExperienceBottleUse", true),
     	STORED_XP("StoredXP", true),
         NOT_ENOUGH_XP_TO_STORE("NotEnoughXP", true),
@@ -107,6 +104,9 @@ public class LangUtil {
         HELP_WITHDRAWXP_HEADER("HelpWithdrawXPHeader", true),
         HELP_WITHDRAWXP("HelpWithDrawXP", true),
         YOUR_INVENTORY_FULL("YourInventoryFull", true),
+        YOU_CURRENT_XP_AMOUNT("YourCurrentXPAmount", true),
+        BASE_ITEM_NEEDED("BaseItemNeeded", true),
+
 
         PLACEHOLDER("Nothing", false);
 

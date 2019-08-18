@@ -2,14 +2,13 @@ package com.ljack2k.JackBottles.Commands;
 
 import com.ljack2k.JackBottles.JackBottles;
 import com.ljack2k.JackBottles.Utils.LangUtil;
+import com.ljack2k.JackBottles.Utils.SetExpFix;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -41,116 +40,136 @@ public class CommandWithdrawXP implements CommandExecutor {
         }
 
         // Only players can do this command
-        if (sender instanceof Player) {
-            // Get player
-            Player player = ((Player) sender).getPlayer();
+        if (!(sender instanceof Player)) {
+            plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NOT_INGAME_PLAYER);
+            return false;
+        }
 
-            // Does the player have permissions to use this command
-            if (player.hasPermission(plugin.getBasePermissionNode() + ".withdrawxp")) {
-                // Check if arguments where given
-                if (args.length > 0) {
-                    // Get given amount and check if it is actually a number
-                    Integer amount;
-                    try {
-                        amount = Integer.parseInt(args[0]);
-                    } catch (NumberFormatException | NullPointerException nfe) {
-                        plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR);
-                        return false;
-                    }
+        // Get player
+        Player player = ((Player) sender).getPlayer();
 
-                    // Negative amounts are not allowed
-                    if (amount >= 1) {
-                        // Check if player can afford it
-                        if (player.getTotalExperience() >= amount) {
+        // Does the player have permissions to use this command
+        if (!player.hasPermission(plugin.getBasePermissionNode() + ".withdrawxp")) {
+            plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NO_COMMAND_PERMISSION);
+            return false;
+        }
 
-                            // Create new item
-                            ItemStack itemStack = new ItemStack(plugin.getStoredItem());
+        // Check if arguments where given
+        if (args.length == 0) {
+            // No amount given
+            plugin.sendChatMessage(sender, ChatColor.RED + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR.toString());
+            plugin.sendChatMessage(sender, ChatColor.GREEN + String.format(LangUtil.Message.YOU_CURRENT_XP_AMOUNT.toString(), SetExpFix.getTotalExperience(player)));
+            return true;
+        }
 
-                            // Get meta data
-                            ItemMeta itemMeta = itemStack.getItemMeta();
+        int amount;
 
-                            // Set display name
-                            itemMeta.setDisplayName(ChatColor.GREEN + "" + LangUtil.Message.XP_BOTTLE_NAME);
+        if(args[0] == "all") {
+            // Get all the XP from the player
+            amount = SetExpFix.getTotalExperience(player);
+        } else {
 
-                            // Create lore list
-                            List<String> loreList = new ArrayList<>();
-                            loreList.add(ChatColor.AQUA + "" + LangUtil.Message.STORED_XP + ":" + ChatColor.GOLD  + amount);
-
-                            // Empty line
-                            // Empty row
-                            loreList.add("");
-
-                            // Use lore last
-                            //loreList.add(ChatColor.YELLOW + String.format("" + LangUtil.Message.XP_BOTTLE_SHIFT_RIGHT_CLICK_USE, amount));
-                            //loreList.add(ChatColor.YELLOW + String.format("" + LangUtil.Message.XP_BOTTLE_SHIFT_LEFT_CLICK_USE, amount));
-                            loreList.add(ChatColor.YELLOW + String.format("" + LangUtil.Message.XP_BOTTLE_RIGHT_CLICK_USE, amount));
-
-                            // Empty row
-                            loreList.add("");
-
-                            // UUID row
-                            UUID uuid = UUID.randomUUID();
-                            loreList.add(ChatColor.DARK_GRAY + uuid.toString());
-
-                            // Set lore to meta data
-                            itemMeta.setLore(loreList);
-
-                            // Set NBT data
-                            itemMeta.getPersistentDataContainer().set(keyPlugin, PersistentDataType.STRING, plugin.getName());
-                            itemMeta.getPersistentDataContainer().set(keyAmount, PersistentDataType.INTEGER, amount);
-                            itemMeta.getPersistentDataContainer().set(keyUUID, PersistentDataType.STRING, uuid.toString());
-
-                            // Apply hide Enchant flags
-                            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-                            // Apply lore and NBT to item
-                            itemStack.setItemMeta(itemMeta);
-
-                            // Add enchantment
-                            itemStack.addUnsafeEnchantment(Enchantment.LURE, 1);
-
-                            // Attempt to give the item
-                            if (givePlayerItem(player, itemStack)) {
-                                // Successfully given the item, now do the xp transaction
-                                player.setTotalExperience(player.getTotalExperience() - amount);
-                            } else {
-                                // Can't give the item
-                                plugin.sendChatMessage(player, ChatColor.RED + "" + LangUtil.Message.YOUR_INVENTORY_FULL);
-                            }
-                        } else {
-                            // Not enough xp
-                            plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NOT_ENOUGH_XP_TO_STORE);
-                        }
-
-
-                    } else {
-                        // No negative amounts
-                        plugin.sendChatMessage(player, ChatColor.RED + "" + String.format("" + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR, 1));
-                    }
-
-                } else {
-                    // No amount given
-                    plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR);
-                    plugin.sendChatMessage(sender, ChatColor.GREEN + String.format("You totally have %s XP", player.getTotalExperience() ));
-                    plugin.sendChatMessage(sender, ChatColor.GREEN + String.format("You have %s XP", player.getExp()));
-                }
-
-            } else {
-                // Console can't do this, needs to be a player
-                plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NOT_INGAME_PLAYER);
+            // Get given amount and check if it is actually a number
+            try {
+                amount = Integer.parseInt(args[0]);
+            } catch (NumberFormatException | NullPointerException nfe) {
+                plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR);
+                plugin.sendChatMessage(sender, ChatColor.GREEN + String.format(LangUtil.Message.YOU_CURRENT_XP_AMOUNT.toString(), SetExpFix.getTotalExperience(player)));
+                return false;
             }
         }
+
+        // Negative amounts are not allowed
+        if (amount < plugin.getConfig().getInt("MinimumAmount")) {
+            // No negative amounts
+            plugin.sendChatMessage(player, ChatColor.RED + "" + String.format("" + LangUtil.Message.EXPERIENCE_AMOUNT_ERROR, 1));
+            plugin.sendChatMessage(sender, ChatColor.GREEN + String.format(LangUtil.Message.YOU_CURRENT_XP_AMOUNT.toString(), SetExpFix.getTotalExperience(player)));
+            return false;
+        }
+
+        // Check if player can afford it
+        if (SetExpFix.getTotalExperience(player) < amount) {
+            // Not enough xp
+            plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NOT_ENOUGH_XP_TO_STORE);
+            plugin.sendChatMessage(sender, ChatColor.GREEN + String.format(LangUtil.Message.YOU_CURRENT_XP_AMOUNT.toString(), SetExpFix.getTotalExperience(player)));
+            return false;
+        }
+
+        // Create itemstack from baseitem
+        ItemStack baseItemStack = new ItemStack(plugin.getBaseItem());
+
+        // Set amount
+        baseItemStack.setAmount(1);
+
+        // Search player inventory for the item
+        if (!findPlayerItem(player, baseItemStack)) {
+            plugin.sendChatMessage(sender, ChatColor.RED + LangUtil.Message.BASE_ITEM_NEEDED.toString());
+            return false;
+        }
+
+        // Remove one base item from the inventory
+        player.getInventory().removeItem(baseItemStack);
+
+        // Create new item
+        ItemStack itemStack = new ItemStack(plugin.getStoredItem());
+
+        // Get meta data
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        // Set display name
+        itemMeta.setDisplayName(ChatColor.GREEN + "" + LangUtil.Message.XP_BOTTLE_NAME);
+
+        // Create lore list
+        List<String> loreList = new ArrayList<>();
+        loreList.add(ChatColor.AQUA + "" + LangUtil.Message.STORED_XP + ": " + ChatColor.GOLD + amount);
+
+        // Use lore last
+        loreList.add(ChatColor.YELLOW + String.format("" + LangUtil.Message.XP_BOTTLE_RIGHT_CLICK_USE, amount));
+
+        // UUID row
+        UUID uuid = UUID.randomUUID();
+        loreList.add(ChatColor.DARK_GRAY + uuid.toString());
+
+        // Set lore to meta data
+        itemMeta.setLore(loreList);
+
+        // Set NBT data
+        itemMeta.getPersistentDataContainer().set(keyPlugin, PersistentDataType.STRING, plugin.getName());
+        itemMeta.getPersistentDataContainer().set(keyAmount, PersistentDataType.INTEGER, amount);
+        itemMeta.getPersistentDataContainer().set(keyUUID, PersistentDataType.STRING, uuid.toString());
+
+        // Apply lore and NBT to item
+        itemStack.setItemMeta(itemMeta);
+
+        // Attempt to give the item
+        if (givePlayerItem(player, itemStack)) {
+            // Successfully given the item, now do the xp transaction
+            SetExpFix.setTotalExperience(player, (SetExpFix.getTotalExperience(player) - amount));
+        } else {
+            // Can't give the item
+            plugin.sendChatMessage(player, ChatColor.RED + "" + LangUtil.Message.YOUR_INVENTORY_FULL);
+        }
+
         return true;
     }
 
     public void sendCommandHelp(CommandSender sender) {
         if (sender instanceof Player) {
-            plugin.sendChatHeader(sender, "" + LangUtil.Message.HELP_WITHDRAWXP_HEADER);
-            plugin.sendChatMessage(sender, "" + LangUtil.Message.HELP_WITHDRAWXP);
+            plugin.sendChatHeader(sender, LangUtil.Message.HELP_WITHDRAWXP_HEADER.toString());
+            plugin.sendChatMessage(sender, LangUtil.Message.HELP_WITHDRAWXP.toString());
+            plugin.sendChatMessage(sender, ChatColor.YELLOW + "/withdrawxp " + ChatColor.GREEN + "all");
             plugin.sendChatMessage(sender, ChatColor.YELLOW + "/withdrawxp " + ChatColor.GREEN + "<amount>");
         } else {
             plugin.sendChatMessage(sender, ChatColor.RED + "" + LangUtil.Message.NOT_INGAME_PLAYER);
         }
+    }
+
+    public boolean findPlayerItem(Player player, ItemStack item) {
+        return findPlayerItem(player, item, 1);
+    }
+
+    public boolean findPlayerItem(Player player, ItemStack item, Integer qty) {
+        return player.getInventory().containsAtLeast(item, qty);
     }
 
     /**

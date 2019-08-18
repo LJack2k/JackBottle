@@ -6,9 +6,9 @@
 
     <groupId>com.ljack2k</groupId>
     <artifactId>JackBottles</artifactId>
-    <version>0.0.3</version>
+    <version>0.1.0</version>
     <name>JackBottles</name>
-    <description>A Cheques System</description>
+    <description>A Experience Bottle System</description>
 
     <licenses>
         <license>
@@ -28,7 +28,7 @@
         <mainclass>com.ljack2k.JackBottles.JackBottles</mainclass>
         <developer>LJack2k</developer>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <description>A Cheques System</description>
+        <description>A Experience Bottle System</description>
         <apiversion>1.14</apiversion>
     </properties>
 

@@ -8,4 +8,5 @@ ConfigVersion: "${project.version}"
 DebugLevel: 0
 ForcedLanguage: EN
 
-ExperienceAmountPerClick: 10
+# Minimum amount to store in a bottle
+MinimumAmount: 1
